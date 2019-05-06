@@ -204,8 +204,8 @@ const char *MipsTargetLowering::getTargetNodeName(unsigned Opcode) const {
   case MipsISD::MFHI:              return "MipsISD::MFHI";
   case MipsISD::MFLO:              return "MipsISD::MFLO";
   case MipsISD::MTLOHI:            return "MipsISD::MTLOHI";
-  case MipsISD::Mult:              return "MipsISD::Mult";
-  case MipsISD::Multu:             return "MipsISD::Multu";
+//  case MipsISD::Mult:              return "MipsISD::Mult";
+//  case MipsISD::Multu:             return "MipsISD::Multu";
   case MipsISD::MAdd:              return "MipsISD::MAdd";
   case MipsISD::MAddu:             return "MipsISD::MAddu";
   case MipsISD::MSub:              return "MipsISD::MSub";
@@ -340,6 +340,26 @@ MipsTargetLowering::MipsTargetLowering(const MipsTargetMachine &TM,
   // we don't want this, since the fpcmp result goes to a flag register,
   // which is used implicitly by brcond and select operations.
   AddPromotedToType(ISD::SETCC, MVT::i1, MVT::i32);
+
+  setOperationAction(MipsISD::LWL, MVT::i8, Expand);
+  setOperationAction(MipsISD::LWL, MVT::i16, Expand);
+  setOperationAction(MipsISD::LWL, MVT::i32, Expand);
+
+  setOperationAction(ISD::MUL, MVT::i8, Expand);
+  setOperationAction(ISD::MUL, MVT::i16, Expand);
+  setOperationAction(ISD::MUL, MVT::i32, Expand);
+  setOperationAction(ISD::MUL, MVT::i64, Expand);
+
+
+  setOperationAction(ISD::SMUL_LOHI, MVT::i8, Expand);
+  setOperationAction(ISD::SMUL_LOHI, MVT::i16, Expand);
+  setOperationAction(ISD::SMUL_LOHI, MVT::i32, Expand);
+  setOperationAction(ISD::SMUL_LOHI, MVT::i64, Expand);
+  setOperationAction(ISD::UMUL_LOHI, MVT::i8, Expand);
+  setOperationAction(ISD::UMUL_LOHI, MVT::i16, Expand);
+  setOperationAction(ISD::UMUL_LOHI, MVT::i32, Expand);
+  setOperationAction(ISD::UMUL_LOHI, MVT::i64, Expand);
+
 
   // Mips Custom Operations
   setOperationAction(ISD::BR_JT,              MVT::Other, Expand);
@@ -661,16 +681,16 @@ static SDValue createFPCmp(SelectionDAG &DAG, const SDValue &Op) {
                      DAG.getConstant(condCodeToFCC(CC), DL, MVT::i32));
 }
 
-// Creates and returns a CMovFPT/F node.
-static SDValue createCMovFP(SelectionDAG &DAG, SDValue Cond, SDValue True,
-                            SDValue False, const SDLoc &DL) {
-  ConstantSDNode *CC = cast<ConstantSDNode>(Cond.getOperand(2));
-  bool invert = invertFPCondCodeUser((Mips::CondCode)CC->getSExtValue());
-  SDValue FCC0 = DAG.getRegister(Mips::FCC0, MVT::i32);
+// // Creates and returns a CMovFPT/F node.
+// static SDValue createCMovFP(SelectionDAG &DAG, SDValue Cond, SDValue True,
+//                             SDValue False, const SDLoc &DL) {
+//   ConstantSDNode *CC = cast<ConstantSDNode>(Cond.getOperand(2));
+//   bool invert = invertFPCondCodeUser((Mips::CondCode)CC->getSExtValue());
+//   SDValue FCC0 = DAG.getRegister(Mips::FCC0, MVT::i32);
 
-  return DAG.getNode((invert ? MipsISD::CMovFP_F : MipsISD::CMovFP_T), DL,
-                     True.getValueType(), True, FCC0, False, Cond);
-}
+//   return DAG.getNode((invert ? MipsISD::CMovFP_F : MipsISD::CMovFP_T), DL,
+//                      True.getValueType(), True, FCC0, False, Cond);
+// }
 
 static SDValue performSELECTCombine(SDNode *N, SelectionDAG &DAG,
                                     TargetLowering::DAGCombinerInfo &DCI,
@@ -2046,11 +2066,11 @@ lowerSELECT(SDValue Op, SelectionDAG &DAG) const
   SDValue Cond = createFPCmp(DAG, Op.getOperand(0));
 
   // Return if flag is not set by a floating point comparison.
-  if (Cond.getOpcode() != MipsISD::FPCmp)
+  // if (Cond.getOpcode() != MipsISD::FPCmp)
     return Op;
 
-  return createCMovFP(DAG, Cond, Op.getOperand(1), Op.getOperand(2),
-                      SDLoc(Op));
+  // return createCMovFP(DAG, Cond, Op.getOperand(1), Op.getOperand(2),
+  //                     SDLoc(Op));
 }
 
 SDValue MipsTargetLowering::lowerSETCC(SDValue Op, SelectionDAG &DAG) const {
@@ -2064,7 +2084,8 @@ SDValue MipsTargetLowering::lowerSETCC(SDValue Op, SelectionDAG &DAG) const {
   SDValue True  = DAG.getConstant(1, DL, MVT::i32);
   SDValue False = DAG.getConstant(0, DL, MVT::i32);
 
-  return createCMovFP(DAG, Cond, True, False, DL);
+  // return createCMovFP(DAG, Cond, True, False, DL);
+  return Op;
 }
 
 SDValue MipsTargetLowering::lowerGlobalAddress(SDValue Op,
