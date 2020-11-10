@@ -647,12 +647,12 @@ def : InstRW<[GenericWriteStore], (instrs Save16, SaveX16, SbRxRyOffMemX16,
 
 def : InstRW<[GenericWriteLoad], (instrs LBU16_MM, LB_MM, LBu_MM, LHU16_MM,
                                   LH_MM, LHu_MM, LL_MM, LW16_MM, LWGP_MM,
-                                  LWL_MM, LWM16_MM, LWM32_MM, LWP_MM, LWR_MM,
+                                  LWM16_MM, LWM32_MM, LWP_MM,
                                   LWSP_MM, LWU_MM, LWXS_MM, LW_MM)>;
 
 def : InstRW<[GenericWriteStore], (instrs SB16_MM, SC_MM, SH16_MM, SH_MM,
-                                   SW16_MM, SWL_MM, SWM16_MM, SWM32_MM, SWM_MM,
-                                   SWP_MM, SWR_MM, SWSP_MM, SW_MM)>;
+                                   SW16_MM, SWM16_MM, SWM32_MM, SWM_MM,
+                                   SWP_MM, SWSP_MM, SW_MM)>;
 
 
 def : InstRW<[GenericWritePref], (instrs PREF_MM, PREFX_MM)>;

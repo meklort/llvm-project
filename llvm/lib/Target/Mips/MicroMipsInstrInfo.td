@@ -866,20 +866,6 @@ let DecoderNamespace = "MicroMips" in {
   def LWXS_MM : LoadWordIndexedScaledMM<"lwxs", GPR32Opnd>, LWXS_FM_MM<0x118>,
                 ISA_MICROMIPS;
 
-  /// Load and Store Instructions - unaligned
-  def LWL_MM : MMRel, LoadLeftRightMM<"lwl", MipsLWL, GPR32Opnd, mem_mm_12,
-                                      II_LWL>, LWL_FM_MM<0x0>,
-               ISA_MICROMIPS32_NOT_MIPS32R6;
-  def LWR_MM : MMRel, LoadLeftRightMM<"lwr", MipsLWR, GPR32Opnd, mem_mm_12,
-                                      II_LWR>, LWL_FM_MM<0x1>,
-               ISA_MICROMIPS32_NOT_MIPS32R6;
-  def SWL_MM : MMRel, StoreLeftRightMM<"swl", MipsSWL, GPR32Opnd, mem_mm_12,
-                                       II_SWL>, LWL_FM_MM<0x8>,
-               ISA_MICROMIPS32_NOT_MIPS32R6;
-  def SWR_MM : MMRel, StoreLeftRightMM<"swr", MipsSWR, GPR32Opnd, mem_mm_12,
-                                       II_SWR>, LWL_FM_MM<0x9>,
-               ISA_MICROMIPS32_NOT_MIPS32R6;
-
   /// Load and Store Instructions - multiple
   def SWM32_MM  : StoreMultMM<"swm32", II_SWM>, LWM_FM_MM<0xd>, ISA_MICROMIPS;
   def LWM32_MM  : LoadMultMM<"lwm32", II_LWM>, LWM_FM_MM<0x5>, ISA_MICROMIPS;
